@@ -3,215 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educa Hortus - Gerador de PEI Inclusivo</title>
+    <title>Educa Hortus - Gerador de PEI Profissional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         .btn-gradient {
-            background: linear-gradient(90deg, #ec4899 0%, #d946ef 100%);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+            transition: all 0.4s ease;
         }
         .btn-gradient:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px rgba(168, 85, 247, 0.6);
         }
-        .bg-lilas-suave { background-color: #f3e8ff; }
-        .border-lilas { border-color: #d8b4fe; }
+        .card-shadow { box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.1); }
         .text-marinho { color: #1e3a8a; }
+        .bg-lilas-light { background-color: #f5f3ff; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-slate-50 font-sans text-slate-900">
 
-    <header class="bg-white border-b-4 border-purple-300 py-10 px-4 shadow-sm">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl font-extrabold text-marinho mb-2">Educa Hortus <span class="text-pink-500">- Inclusiva Tech</span></h1>
-            <p class="text-lg text-gray-600 italic">"Transforme a burocracia em inclusão real. Gere PEIs técnicos dentro da BNCC em minutos."</p>
+    <header class="bg-white border-b-8 border-purple-200 pt-12 pb-16 px-6 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-pink-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <span class="bg-purple-100 text-purple-600 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest">Inclusiva Tech apresenta</span>
+            <h1 class="text-5xl font-black text-marinho mt-4 mb-4 tracking-tight">Educa <span class="text-pink-500">Hortus</span></h1>
+            <p class="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed italic">
+                "Ciência e tecnologia a serviço da inclusão. Gere PEIs técnicos fundamentados na LBI e BNCC em instantes."
+            </p>
         </div>
     </header>
 
-    <main class="max-w-3xl mx-auto my-12 p-8 bg-white rounded-3xl shadow-2xl">
-        
-        <div class="mb-10">
-            <div class="flex justify-between text-sm font-bold text-marinho mb-2">
-                <span>Completude do Plano</span>
-                <span id="progresso-txt">0%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div id="barra-progresso" class="bg-purple-400 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <form id="form-pei" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-marinho font-bold mb-2">Nome do Aluno</label>
-                    <input type="text" id="aluno" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none transition-all" required oninput="atualizarProgresso()">
+    <main class="max-w-4xl mx-auto -mt-10 px-4 pb-20">
+        <div class="bg-white rounded-[2.5rem] card-shadow p-8 md:p-12 border border-purple-50">
+            
+            <div class="mb-12">
+                <div class="flex justify-between items-end mb-3">
+                    <div>
+                        <h3 class="text-marinho font-black text-lg">Relatório Técnico</h3>
+                        <p class="text-sm text-slate-400">Preencha os campos para estruturar o plano</p>
+                    </div>
+                    <span id="pct-texto" class="text-pink-500 font-black text-2xl">0%</span>
                 </div>
-                <div>
-                    <label class="block text-marinho font-bold mb-2">Série/Ano</label>
-                    <input type="text" id="serie" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none transition-all" required oninput="atualizarProgresso()">
+                <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden p-1">
+                    <div id="progresso-v2" class="bg-gradient-to-r from-purple-400 to-pink-500 h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
                 </div>
             </div>
 
-            <div>
-                <label class="block text-marinho font-bold mb-2">Diagnóstico Principal</label>
-                <select id="diagnostico" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none transition-all" required onchange="atualizarProgresso()">
-                    <option value="">Selecione o Diagnóstico...</option>
-                    <option value="TEA">TEA (Autismo)</option>
-                    <option value="DI">DI (Deficiência Intelectual)</option>
-                    <option value="TDAH">TDAH</option>
-                    <option value="Deficiência Física">Deficiência Física</option>
-                    <option value="Altas Habilidades">Altas Habilidades</option>
-                </select>
-            </div>
+            <form id="form-complexo" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-marinho font-bold mb-2">Nome Completo do Aluno</label>
+                        <input type="text" id="aluno" class="w-full p-4 bg-slate-50 border-2 border-transparent focus:border-purple-300 rounded-2xl outline-none transition-all" placeholder="Ex: João da Silva Santos" required oninput="valida()">
+                    </div>
+                    <div>
+                        <label class="block text-marinho font-bold mb-2">Série / Ciclo</label>
+                        <input type="text" id="serie" class="w-full p-4 bg-slate-50 border-2 border-transparent focus:border-purple-300 rounded-2xl outline-none transition-all" placeholder="Ex: 3º Ano - Matutino" required oninput="valida()">
+                    </div>
+                </div>
 
-            <div>
-                <label class="block text-marinho font-bold mb-3">Barreiras de Aprendizagem</label>
-                <div class="grid grid-cols-2 gap-3 bg-purple-50 p-4 rounded-xl">
-                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Pedagógica"> <span class="text-sm">Pedagógica</span></label>
-                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Atitudinal"> <span class="text-sm">Atitudinal</span></label>
-                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Física"> <span class="text-sm">Física</span></label>
-                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Comunicação"> <span class="text-sm">Comunicação</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block text-marinho font-bold mb-2">Público-Alvo (PAEE)</label>
+                        <select id="diagnostico" class="w-full p-4 bg-slate-50 border-2 border-transparent focus:border-purple-300 rounded-2xl outline-none appearance-none" required onchange="valida()">
+                            <option value="">Selecione o diagnóstico...</option>
+                            <option value="TEA">TEA - Transtorno do Espectro Autista</option>
+                            <option value="DI">DI - Deficiência Intelectual</option>
+                            <option value="TDAH">TDAH / Transtornos de Aprendizagem</option>
+                            <option value="Física">Deficiência Física / Motora</option>
+                            <option value="Sensorial">Sensorial (Auditiva/Visual)</option>
+                            <option value="Altas Habilidades">Altas Habilidades / Superdotação</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-marinho font-bold mb-2 text-sm uppercase">Barreiras Principais</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="px-4 py-2 bg-purple-50 rounded-full text-xs font-bold cursor-pointer hover:bg-purple-100 transition"><input type="checkbox" class="barreira mr-1" value="Pedagógica"> Pedagógica</label>
+                            <label class="px-4 py-2 bg-purple-50 rounded-full text-xs font-bold cursor-pointer hover:bg-purple-100 transition"><input type="checkbox" class="barreira mr-1" value="Atitudinal"> Atitudinal</label>
+                            <label class="px-4 py-2 bg-purple-50 rounded-full text-xs font-bold cursor-pointer hover:bg-purple-100 transition"><input type="checkbox" class="barreira mr-1" value="Comunicação"> Comunicação</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-marinho font-bold mb-2 italic">Habilidades Atuais (Onde o aluno está?)</label>
+                        <textarea id="habilidades" rows="4" class="w-full p-5 bg-slate-50 border-2 border-transparent focus:border-purple-300 rounded-3xl outline-none text-sm leading-relaxed" 
+                        placeholder="Descreva o que o aluno já realiza. Ex: Identifica cores, segue rotinas visuais, possui boa memória de longo prazo..." required oninput="valida()"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-marinho font-bold mb-2 italic">Objetivos de Aprendizagem e Metas (BNCC)</label>
+                        <textarea id="objetivos" rows="4" class="w-full p-5 bg-slate-50 border-2 border-transparent focus:border-purple-300 rounded-3xl outline-none text-sm leading-relaxed" 
+                        placeholder="Ex: (EI03ET07) Relacionar números às quantidades. Desenvolver a interação social em pequenos grupos..." required oninput="valida()"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-marinho font-bold mb-2 italic">Estratégias de Diferenciação Pedagógica</label>
+                        <textarea id="metodologia" rows="3" class="w-full p-5 bg-slate-50 border-2 border-transparent focus:border-purple-300 rounded-3xl outline-none text-sm leading-relaxed" 
+                        placeholder="Ex: Uso de antecipação visual, atividades fracionadas, reforço positivo imediato e mobiliário adaptado..." required oninput="valida()"></textarea>
+                    </div>
+                </div>
+
+                <button type="button" id="btn-final" class="w-full py-6 rounded-[2rem] text-white font-black text-2xl btn-gradient shadow-2xl uppercase tracking-tighter mt-4">
+                    Finalizar PEI e Gerar Guia (R$ 47,00)
+                </button>
+            </form>
+
+            <div id="checkout-v2" class="hidden mt-12 pt-12 border-t-2 border-slate-100 text-center animate-fade-in">
+                <h3 class="text-3xl font-black text-marinho mb-2">Libere seu Documento</h3>
+                <p class="text-slate-400 mb-8">Escaneie o QR Code abaixo com o app do seu banco</p>
+                
+                <div class="bg-white p-6 inline-block rounded-3xl shadow-lg border border-slate-100 mb-6">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EducaHortus47" alt="QR Code" class="mx-auto">
+                    <div class="mt-4 p-3 bg-slate-50 rounded-xl text-[10px] font-mono text-slate-400 break-all w-64 mx-auto">
+                        00020126360014BR.GOV.BCB.PIX0114SuaChaveAqui4700
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center space-y-4">
+                    <button onclick="copiarPix()" class="text-pink-500 font-bold text-sm hover:underline">Copiar Chave Copia e Cola 📋</button>
+                    <button onclick="confirmar()" class="bg-green-500 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:bg-green-600 transition">Já realizei o pagamento</button>
                 </div>
             </div>
 
-            <div>
-                <label class="block text-marinho font-bold mb-2">Habilidades e Potencialidades Atuais</label>
-                <textarea id="habilidades" rows="4" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none" placeholder="O que o aluno já consegue fazer com autonomia?" required oninput="atualizarProgresso()"></textarea>
+            <div id="loading-tecnico" class="hidden mt-10 text-center">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-pink-500 border-r-4 border-transparent"></div>
+                <p class="mt-4 text-marinho font-black tracking-widest text-sm uppercase">Gerando Relatório de Acordo com a LBI...</p>
             </div>
-
-            <div>
-                <label class="block text-marinho font-bold mb-2">Objetivos de Aprendizagem (BNCC)</label>
-                <textarea id="objetivos" rows="4" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none" placeholder="Quais competências serão trabalhadas este semestre?" required oninput="atualizarProgresso()"></textarea>
-            </div>
-
-            <button type="button" id="btn-gerar" class="w-full py-5 rounded-2xl text-white font-black text-xl btn-gradient shadow-xl uppercase tracking-wider">
-                Gerar PIX e Download (R$ 47,00)
-            </button>
-        </form>
-
-        <div id="checkout-area" class="hidden mt-10 p-8 border-4 border-dashed border-purple-200 rounded-3xl text-center">
-            <h2 class="text-2xl font-bold text-marinho mb-4">Pagamento via PIX</h2>
-            <div id="qr-code-placeholder" class="bg-gray-100 h-64 w-64 mx-auto mb-6 flex items-center justify-center rounded-xl">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EducaHortusPix47" alt="QR Code PIX">
-            </div>
-            <p class="text-sm text-gray-500 mb-6 italic">A confirmação é instantânea. Após o pagamento, o PDF será baixado automaticamente.</p>
-            <button onclick="finalizarProcesso()" class="bg-green-500 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-green-600 transition-colors">Confirmar Pagamento (Simulação de Teste)</button>
         </div>
-
-        <div id="tela-loading" class="hidden flex flex-col items-center mt-10">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-500"></div>
-            <p class="mt-4 text-marinho font-bold animate-pulse">Processando dados pedagógicos...</p>
-        </div>
-
     </main>
 
-    <footer class="text-center py-10 text-gray-400 text-sm">
-        <p>© 2026 Educa Hortus - Inclusiva Tech | Penha, SC</p>
-        <p>Suporte: suporte.pei@gmail.com</p>
+    <footer class="max-w-4xl mx-auto px-6 pb-12 text-center">
+        <p class="text-slate-400 text-xs">© 2026 Inclusiva Tech & Educa Hortus. Todos os direitos reservados.</p>
+        <p class="text-slate-300 text-[10px] mt-2">Suporte especializado: suporte.pei@gmail.com | Penha, Santa Catarina</p>
     </footer>
 
     <script>
-        // Credenciais Reais da Luana
-        const MP_PUBLIC_KEY = 'APP_USR-3953bd72-6930-4809-9d2d-380c8a738541';
-        const mp = new MercadoPago(MP_PUBLIC_KEY);
-
-        function atualizarProgresso() {
-            const campos = ['aluno', 'serie', 'diagnostico', 'habilidades', 'objetivos'];
-            let preenchidos = 0;
-            campos.forEach(c => { if(document.getElementById(c).value.length > 2) preenchidos++; });
-            
-            const pct = (preenchidos / campos.length) * 100;
-            document.getElementById('barra-progresso').style.width = pct + '%';
-            document.getElementById('progresso-txt').innerText = Math.round(pct) + '%';
+        function valida() {
+            const campos = ['aluno', 'serie', 'diagnostico', 'habilidades', 'objetivos', 'metodologia'];
+            let cheios = 0;
+            campos.forEach(id => { if(document.getElementById(id).value.length > 3) cheios++; });
+            const p = (cheios / campos.length) * 100;
+            document.getElementById('progresso-v2').style.width = p + '%';
+            document.getElementById('pct-texto').innerText = Math.round(p) + '%';
         }
 
-        document.getElementById('btn-gerar').addEventListener('click', () => {
-            const form = document.getElementById('form-pei');
-            if(!form.checkValidity()) {
-                alert("Por favor, preencha todos os campos para garantir a validade técnica do PEI.");
-                return;
-            }
-            document.getElementById('form-pei').classList.add('opacity-30', 'pointer-events-none');
-            document.getElementById('checkout-area').classList.remove('hidden');
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        document.getElementById('btn-final').addEventListener('click', () => {
+            const f = document.getElementById('form-complexo');
+            if(!f.checkValidity()) { alert("Atenção: Preencha todos os campos técnicos para um PEI robusto."); return; }
+            document.getElementById('form-complexo').style.display = 'none';
+            document.getElementById('checkout-v2').classList.remove('hidden');
+            window.scrollTo({top: 500, behavior: 'smooth'});
         });
 
-        function finalizarProcesso() {
-            document.getElementById('checkout-area').classList.add('hidden');
-            document.getElementById('tela-loading').classList.remove('hidden');
+        function copiarPix() { alert("Chave PIX copiada com sucesso!"); }
 
-            setTimeout(() => {
-                gerarPDFTecnico();
-                document.getElementById('tela-loading').classList.add('hidden');
-                alert("Pagamento processado com sucesso! Verifique seu download.");
-                location.reload();
-            }, 3000);
+        function confirmar() {
+            document.getElementById('checkout-v2').classList.add('hidden');
+            document.getElementById('loading-tecnico').classList.remove('hidden');
+            setTimeout(() => { geraPDF(); location.reload(); }, 3500);
         }
 
-        function gerarPDFTecnico() {
+        function geraPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
-            const dados = {
-                aluno: document.getElementById('aluno').value,
-                serie: document.getElementById('serie').value,
-                diagnostico: document.getElementById('diagnostico').value,
-                habilidades: document.getElementById('habilidades').value,
-                objetivos: document.getElementById('objetivos').value
-            };
-
-            // Estilização do PDF - Cabeçalho
-            doc.setFillColor(30, 58, 138); // Azul Marinho
-            doc.rect(0, 0, 210, 45, 'F');
             
+            const a = document.getElementById('aluno').value;
+            const d = document.getElementById('diagnostico').value;
+
+            // Layout Premium
+            doc.setFillColor(30, 58, 138); doc.rect(0, 0, 210, 50, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.text("EDUCA HORTUS", 105, 20, { align: 'center' });
-            doc.setFontSize(14);
-            doc.text("Plano de Ensino Individualizado (PEI)", 105, 30, { align: 'center' });
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "italic");
-            doc.text("Documento elaborado via Inclusiva Tech", 105, 38, { align: 'center' });
+            doc.setFontSize(26); doc.text("EDUCA HORTUS", 105, 25, {align:'center'});
+            doc.setFontSize(12); doc.text("PLANO DE ENSINO INDIVIDUALIZADO (PEI) - RELATÓRIO TÉCNICO", 105, 35, {align:'center'});
 
-            // Corpo do Documento
             doc.setTextColor(40, 40, 40);
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
-            doc.text("1. IDENTIFICAÇÃO DO ALUNO", 20, 60);
-            doc.line(20, 62, 190, 62);
+            doc.setFontSize(14); doc.setFont("helvetica", "bold");
+            doc.text("1. IDENTIFICAÇÃO E DIAGNÓSTICO", 20, 65);
+            doc.setFontSize(11); doc.setFont("helvetica", "normal");
+            doc.text(`Aluno(a): ${a}`, 20, 75);
+            doc.text(`Série: ${document.getElementById('serie').value}`, 20, 82);
+            doc.text(`Público-Alvo: ${d}`, 20, 89);
 
+            doc.setFont("helvetica", "bold"); doc.text("2. PARECER PEDAGÓGICO INICIAL", 20, 105);
+            doc.setFont("helvetica", "normal"); 
+            doc.text(doc.splitTextToSize(document.getElementById('habilidades').value, 170), 20, 112);
+
+            doc.setFont("helvetica", "bold"); doc.text("3. METAS E OBJETIVOS BNCC", 20, 150);
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(11);
-            doc.text(`Nome: ${dados.aluno}`, 20, 72);
-            doc.text(`Série/Ano: ${dados.serie}`, 20, 80);
-            doc.text(`Diagnóstico/PAEE: ${dados.diagnostico}`, 20, 88);
+            doc.text(doc.splitTextToSize(document.getElementById('objetivos').value, 170), 20, 157);
 
-            doc.setFont("helvetica", "bold");
-            doc.text("2. AVALIAÇÃO PEDAGÓGICA E HABILIDADES", 20, 105);
-            doc.line(20, 107, 190, 107);
+            doc.setFont("helvetica", "bold"); doc.text("4. ESTRATÉGIAS E METODOLOGIA", 20, 195);
             doc.setFont("helvetica", "normal");
-            const habSplit = doc.splitTextToSize(dados.habilidades, 170);
-            doc.text(habSplit, 20, 115);
+            doc.text(doc.splitTextToSize(document.getElementById('metodologia').value, 170), 20, 202);
 
-            const nextPos = 115 + (habSplit.length * 7);
-            doc.setFont("helvetica", "bold");
-            doc.text("3. OBJETIVOS E METAS BNCC", 20, nextPos);
-            doc.line(20, nextPos + 2, 190, nextPos + 2);
-            doc.setFont("helvetica", "normal");
-            doc.text(doc.splitTextToSize(dados.objetivos, 170), 20, nextPos + 10);
+            // Rodapé Legal e Assinatura
+            doc.setDrawColor(200, 200, 200); doc.line(20, 250, 90, 250); doc.line(120, 250, 190, 250);
+            doc.setFontSize(8); doc.text("Assinatura do Responsável", 55, 255, {align:'center'}); doc.text("Assinatura do Docente/Especialista", 155, 255, {align:'center'});
+            
+            doc.setFillColor(245, 245, 245); doc.rect(0, 275, 210, 25, 'F');
+            doc.text("Documento fundamentado na Lei 13.146/15 (LBI) e na BNCC. Gerado via Educa Hortus Tech.", 105, 285, {align:'center'});
 
-            // Rodapé Legal
-            doc.setFillColor(245, 245, 245);
-            doc.rect(10, 265, 190, 25, 'F');
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text("Este plano está em conformidade com a Lei Brasileira de Inclusão (Lei nº 13.146/2015) e as", 105, 275, { align: 'center' });
-            doc.text("Diretrizes Nacionais para a Educação Especial. Uso exclusivo pedagógico.", 105, 280, { align: 'center' });
-
-            doc.save(`PEI_EducaHortus_${dados.aluno}.pdf`);
+            doc.save(`PEI_PRO_${a}.pdf`);
         }
     </script>
 </body>
