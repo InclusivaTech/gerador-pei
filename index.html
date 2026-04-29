@@ -3,96 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educa Hortus - Gerador com Mentoria</title>
+    <title>Educa Hortus - Gerador Profissional de PEI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         .btn-gradient { background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%); transition: all 0.4s ease; }
+        .btn-gradient:hover { transform: scale(1.02); shadow: 0 10px 20px rgba(168, 85, 247, 0.4); }
         .text-marinho { color: #1e3a8a; }
-        .sugestao-chip { cursor: pointer; transition: all 0.2s; border: 1px solid #ddd; }
-        .sugestao-chip:hover { background-color: #f3e8ff; border-color: #a855f7; color: #a855f7; }
+        .sugestao-btn { background: #f3e8ff; color: #7e22ce; border-radius: 8px; padding: 4px 10px; font-size: 10px; font-weight: bold; cursor: pointer; border: 1px solid #d8b4fe; }
+        .sugestao-btn:hover { background: #d8b4fe; color: white; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
+<body class="bg-slate-50 font-sans">
 
-    <header class="bg-white border-b-8 border-purple-200 pt-10 pb-12 px-6 text-center">
-        <h1 class="text-4xl font-black text-marinho uppercase">Educa <span class="text-pink-500">Hortus</span></h1>
-        <p class="text-slate-500 italic">"Sua mentoria pedagógica automatizada."</p>
+    <header class="bg-white border-b-8 border-purple-200 py-10 px-6 text-center">
+        <h1 class="text-4xl font-black text-marinho uppercase tracking-tighter">Educa <span class="text-pink-500">Hortus</span></h1>
+        <p class="text-slate-500 italic text-sm">"Tecnologia e Ciência Pedagógica pela Inclusão Real."</p>
     </header>
 
-    <main class="max-w-6xl mx-auto -mt-6 px-4 pb-20 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <div class="bg-white rounded-[2.5rem] shadow-2xl p-8 border border-purple-50">
-            <form id="form-final" class="space-y-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="aluno" class="w-full p-4 bg-slate-50 rounded-2xl outline-none" placeholder="Nome do Aluno" oninput="syncPreview()">
-                    <input type="text" id="serie" class="w-full p-4 bg-slate-50 rounded-2xl outline-none" placeholder="Série/Ano" oninput="syncPreview()">
-                </div>
-
-                <select id="diagnostico" class="w-full p-4 bg-slate-50 rounded-2xl outline-none" onchange="syncPreview()">
-                    <option value="">Selecione o Diagnóstico...</option>
-                    <option value="TEA">Autismo (TEA)</option>
-                    <option value="Altas Habilidades">Altas Habilidades / Superdotação</option>
-                    <option value="DI">Deficiência Intelectual</option>
-                </select>
-
-                <div>
-                    <label class="block text-marinho font-bold mb-2">Habilidades e Potencialidades</label>
-                    <textarea id="habilidades" rows="4" class="w-full p-4 bg-slate-50 rounded-2xl outline-none text-sm mb-2" placeholder="O que o aluno já faz?"></textarea>
-                    
-                    <p class="text-[10px] text-slate-400 mb-2 uppercase font-bold">Sugestões de Especialista:</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="sugestao-chip px-3 py-1 rounded-full text-[10px] bg-white" onclick="inserir('habilidades', 'Demonstra excelente memória visual e interesse engajado por temas específicos.')">Memória Visual</span>
-                        <span class="sugestao-chip px-3 py-1 rounded-full text-[10px] bg-white" onclick="inserir('habilidades', 'Realiza pareamento de cores e formas com autonomia e foco.')">Pareamento/Cores</span>
-                        <span class="sugestao-chip px-3 py-1 rounded-full text-[10px] bg-white" onclick="inserir('habilidades', 'Possui vocabulário avançado para a idade cronológica e curiosidade investigativa.')">Vocabulário Avançado</span>
+    <main class="max-w-3xl mx-auto my-8 px-4 pb-20">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-10 border border-purple-50">
+            
+            <form id="form-pei" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-marinho font-bold mb-1 text-sm">Nome do Aluno</label>
+                        <input type="text" id="aluno" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300" placeholder="Ex: João Silva" required>
+                    </div>
+                    <div>
+                        <label class="block text-marinho font-bold mb-1 text-sm">Série/Ano</label>
+                        <input type="text" id="serie" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300" placeholder="Ex: 2º Ano A" required>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-marinho font-bold mb-2">Objetivos (BNCC)</label>
-                    <textarea id="objetivos" rows="4" class="w-full p-4 bg-slate-50 rounded-2xl outline-none text-sm mb-2" placeholder="Metas para o semestre..."></textarea>
-                    
-                    <p class="text-[10px] text-slate-400 mb-2 uppercase font-bold">Sugestões BNCC:</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="sugestao-chip px-3 py-1 rounded-full text-[10px] bg-white" onclick="inserir('objetivos', '(EI03ET07) Relacionar números às suas respectivas quantidades.')">BNCC: Números</span>
-                        <span class="sugestao-chip px-3 py-1 rounded-full text-[10px] bg-white" onclick="inserir('objetivos', '(EI03CG02) Demonstrar controle e adequação do uso de seu corpo em brincadeiras.')">BNCC: Corpo</span>
-                        <span class="sugestao-chip px-3 py-1 rounded-full text-[10px] bg-white" onclick="inserir('objetivos', 'Ampliar o enriquecimento curricular através de projetos de pesquisa autônomos.')">Enriquecimento (AH)</span>
+                    <label class="block text-marinho font-bold mb-1 text-sm">Público-Alvo (Diagnóstico)</label>
+                    <select id="diagnostico" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300" required>
+                        <option value="">Selecione...</option>
+                        <option value="TEA">Autismo (TEA)</option>
+                        <option value="Altas Habilidades">Altas Habilidades / Superdotação</option>
+                        <option value="DI">Deficiência Intelectual (DI)</option>
+                        <option value="TDAH">TDAH / Transtornos</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-marinho font-bold mb-3 text-xs uppercase tracking-widest">Barreiras de Aprendizagem</label>
+                    <div class="grid grid-cols-2 gap-2 bg-purple-50 p-4 rounded-2xl">
+                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Nenhuma"> Sem barreiras</label>
+                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Pedagógica"> Pedagógica</label>
+                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Atitudinal"> Atitudinal</label>
+                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Comunicação"> Comunicação</label>
+                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Tecnológica"> Tecnológica</label>
+                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Social"> Social/Familiar</label>
                     </div>
                 </div>
 
-                <button type="button" id="btn-pagar" class="w-full py-5 rounded-2xl text-white font-black text-xl btn-gradient shadow-xl uppercase">
-                    Gerar PDF Profissional
+                <div>
+                    <label class="block text-marinho font-bold mb-1 text-sm italic">Habilidades e Potencialidades</label>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="sugestao-btn" onclick="inserir('habilidades', 'Demonstra excelente memória visual e foco em temas de interesse.')">+ Foco/Memória</span>
+                        <span class="sugestao-btn" onclick="inserir('habilidades', 'Possui vocabulário avançado e curiosidade investigativa superior.')">+ Vocabulário</span>
+                    </div>
+                    <textarea id="habilidades" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="O que o aluno já consegue fazer?" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-marinho font-bold mb-1 text-sm italic">Objetivos (BNCC)</label>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="sugestao-btn" onclick="inserir('objetivos', '(EI03ET07) Relacionar números às suas respectivas quantidades.')">+ BNCC Números</span>
+                        <span class="sugestao-btn" onclick="inserir('objetivos', 'Promover o enriquecimento curricular através de projetos de pesquisa.')">+ Enriquecimento</span>
+                    </div>
+                    <textarea id="objetivos" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="Quais as metas para o semestre?" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-marinho font-bold mb-1 text-sm italic">Estratégias Pedagógicas</label>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="sugestao-btn" onclick="inserir('metodologia', 'Uso de suportes visuais, rotina estruturada e reforço positivo.')">+ Suporte Visual</span>
+                        <span class="sugestao-btn" onclick="inserir('metodologia', 'Flexibilização de tempo e fracionamento de atividades complexas.')">+ Flexibilização</span>
+                    </div>
+                    <textarea id="metodologia" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="Como você vai ensinar?" required></textarea>
+                </div>
+
+                <button type="button" id="btn-gerar" class="w-full py-5 rounded-2xl text-white font-black text-xl btn-gradient shadow-xl uppercase mt-4">
+                    Gerar PDF Profissional (R$ 47)
                 </button>
             </form>
-        </div>
 
-        <div class="lg:sticky lg:top-10 h-fit">
-            <div class="bg-white rounded-[2.5rem] shadow-xl p-8 border-l-8 border-purple-400">
-                <h3 class="text-xl font-black text-marinho mb-4">Seu PEI em tempo real</h3>
-                <div id="visualizador" class="space-y-4 text-sm text-slate-600">
-                    <p class="font-bold text-lg text-pink-500" id="pre-aluno">Nome do Aluno</p>
-                    <p><span class="font-bold text-marinho">Habilidades:</span> <span id="pre-hab">...</span></p>
-                    <p><span class="font-bold text-marinho">Objetivos:</span> <span id="pre-obj">...</span></p>
+            <div id="checkout-area" class="hidden mt-10 text-center animate-bounce">
+                <div class="p-8 border-4 border-dashed border-purple-200 rounded-[2.5rem]">
+                    <h2 class="text-2xl font-black text-marinho mb-4">Pagamento PIX</h2>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EducaHortus47" class="mx-auto mb-6 shadow-lg rounded-xl">
+                    <button onclick="finalizar()" class="bg-green-500 text-white px-10 py-4 rounded-full font-bold hover:bg-green-600 transition shadow-lg">Já paguei! Baixar PDF</button>
                 </div>
+            </div>
+
+            <div id="loading" class="hidden mt-10 text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-pink-500 border-solid mx-auto"></div>
+                <p class="mt-4 text-marinho font-bold">Processando seu PEI Técnico...</p>
             </div>
         </div>
     </main>
+
+    <footer class="text-center py-10 text-slate-400 text-[10px]">
+        <p>© 2026 Educa Hortus & Inclusiva Tech | Penha - SC</p>
+    </footer>
 
     <script>
         function inserir(campoId, texto) {
             const campo = document.getElementById(campoId);
             campo.value += (campo.value ? " " : "") + texto;
-            syncPreview();
         }
 
-        function syncPreview() {
-            document.getElementById('pre-aluno').innerText = document.getElementById('aluno').value || "Nome do Aluno";
-            document.getElementById('pre-hab').innerText = document.getElementById('habilidades').value || "...";
-            document.getElementById('pre-obj').innerText = document.getElementById('objetivos').value || "...";
+        document.getElementById('btn-gerar').addEventListener('click', () => {
+            const f = document.getElementById('form-pei');
+            if(!f.checkValidity()) { alert("Por favor, preencha todos os campos."); return; }
+            document.getElementById('form-pei').style.display = 'none';
+            document.getElementById('checkout-area').classList.remove('hidden');
+        });
+
+        function finalizar() {
+            document.getElementById('checkout-area').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+            setTimeout(() => { geraPDF(); location.reload(); }, 3000);
         }
-        
-        // Mantive a lógica de PDF anterior...
-        document.getElementById('btn-pagar').addEventListener('click', () => { alert("Botão clicado! Área de pagamento apareceria aqui."); });
+
+        function geraPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const a = document.getElementById('aluno').value;
+
+            // Cabeçalho PDF
+            doc.setFillColor(30, 58, 138); doc.rect(0, 0, 210, 45, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("EDUCA HORTUS", 105, 20, {align:'center'});
+            doc.setFontSize(10); doc.text("PLANO DE ENSINO INDIVIDUALIZADO - PEI PROFISSIONAL", 105, 30, {align:'center'});
+
+            // Conteúdo
+            doc.setTextColor(40, 40, 40); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+            doc.text(`ALUNO(A): ${a}`, 20, 60);
+            doc.text(`SÉRIE: ${document.getElementById('serie').value}`, 20, 68);
+            doc.text(`DIAGNÓSTICO: ${document.getElementById('diagnostico').value}`, 20, 76);
+
+            doc.text("HABILIDADES E POTENCIALIDADES:", 20, 95);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+            doc.text(doc.splitTextToSize(document.getElementById('habilidades').value, 170), 20, 102);
+
+            doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text("METAS E OBJETIVOS BNCC:", 20, 140);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+            doc.text(doc.splitTextToSize(document.getElementById('objetivos').value, 170), 20, 147);
+
+            doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text("ESTRATÉGIAS PEDAGÓGICAS:", 20, 185);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+            doc.text(doc.splitTextToSize(document.getElementById('metodologia').value, 170), 20, 192);
+
+            // Rodapé
+            doc.setFontSize(8); doc.setTextColor(150, 150, 150);
+            doc.text("Documento fundamentado na LBI (Lei 13.146/15) e BNCC. Gerado via Inclusiva Tech.", 105, 285, {align:'center'});
+
+            doc.save(`PEI_HORTUS_${a}.pdf`);
+        }
     </script>
 </body>
 </html>
