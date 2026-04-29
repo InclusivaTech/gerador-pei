@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educa Hortus - Gerador de PEI Inclusivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .btn-gradient {
+            background: linear-gradient(90deg, #ec4899 0%, #d946ef 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.5);
+        }
+        .bg-lilas-suave { background-color: #f3e8ff; }
+        .border-lilas { border-color: #d8b4fe; }
+        .text-marinho { color: #1e3a8a; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <header class="bg-white border-b-4 border-purple-300 py-10 px-4 shadow-sm">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl font-extrabold text-marinho mb-2">Educa Hortus <span class="text-pink-500">- Inclusiva Tech</span></h1>
+            <p class="text-lg text-gray-600 italic">"Transforme a burocracia em inclusão real. Gere PEIs técnicos dentro da BNCC em minutos."</p>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto my-12 p-8 bg-white rounded-3xl shadow-2xl">
+        
+        <div class="mb-10">
+            <div class="flex justify-between text-sm font-bold text-marinho mb-2">
+                <span>Completude do Plano</span>
+                <span id="progresso-txt">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="barra-progresso" class="bg-purple-400 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <form id="form-pei" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-marinho font-bold mb-2">Nome do Aluno</label>
+                    <input type="text" id="aluno" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none transition-all" required oninput="atualizarProgresso()">
+                </div>
+                <div>
+                    <label class="block text-marinho font-bold mb-2">Série/Ano</label>
+                    <input type="text" id="serie" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none transition-all" required oninput="atualizarProgresso()">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-marinho font-bold mb-2">Diagnóstico Principal</label>
+                <select id="diagnostico" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none transition-all" required onchange="atualizarProgresso()">
+                    <option value="">Selecione o Diagnóstico...</option>
+                    <option value="TEA">TEA (Autismo)</option>
+                    <option value="DI">DI (Deficiência Intelectual)</option>
+                    <option value="TDAH">TDAH</option>
+                    <option value="Deficiência Física">Deficiência Física</option>
+                    <option value="Altas Habilidades">Altas Habilidades</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-marinho font-bold mb-3">Barreiras de Aprendizagem</label>
+                <div class="grid grid-cols-2 gap-3 bg-purple-50 p-4 rounded-xl">
+                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Pedagógica"> <span class="text-sm">Pedagógica</span></label>
+                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Atitudinal"> <span class="text-sm">Atitudinal</span></label>
+                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Física"> <span class="text-sm">Física</span></label>
+                    <label class="flex items-center space-x-3"><input type="checkbox" class="barreira" value="Comunicação"> <span class="text-sm">Comunicação</span></label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-marinho font-bold mb-2">Habilidades e Potencialidades Atuais</label>
+                <textarea id="habilidades" rows="4" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none" placeholder="O que o aluno já consegue fazer com autonomia?" required oninput="atualizarProgresso()"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-marinho font-bold mb-2">Objetivos de Aprendizagem (BNCC)</label>
+                <textarea id="objetivos" rows="4" class="w-full p-4 border-2 border-gray-100 rounded-xl focus:border-purple-400 outline-none" placeholder="Quais competências serão trabalhadas este semestre?" required oninput="atualizarProgresso()"></textarea>
+            </div>
+
+            <button type="button" id="btn-gerar" class="w-full py-5 rounded-2xl text-white font-black text-xl btn-gradient shadow-xl uppercase tracking-wider">
+                Gerar PIX e Download (R$ 47,00)
+            </button>
+        </form>
+
+        <div id="checkout-area" class="hidden mt-10 p-8 border-4 border-dashed border-purple-200 rounded-3xl text-center">
+            <h2 class="text-2xl font-bold text-marinho mb-4">Pagamento via PIX</h2>
+            <div id="qr-code-placeholder" class="bg-gray-100 h-64 w-64 mx-auto mb-6 flex items-center justify-center rounded-xl">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EducaHortusPix47" alt="QR Code PIX">
+            </div>
+            <p class="text-sm text-gray-500 mb-6 italic">A confirmação é instantânea. Após o pagamento, o PDF será baixado automaticamente.</p>
+            <button onclick="finalizarProcesso()" class="bg-green-500 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-green-600 transition-colors">Confirmar Pagamento (Simulação de Teste)</button>
+        </div>
+
+        <div id="tela-loading" class="hidden flex flex-col items-center mt-10">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-500"></div>
+            <p class="mt-4 text-marinho font-bold animate-pulse">Processando dados pedagógicos...</p>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-10 text-gray-400 text-sm">
+        <p>© 2026 Educa Hortus - Inclusiva Tech | Penha, SC</p>
+        <p>Suporte: suporte.pei@gmail.com</p>
+    </footer>
+
+    <script>
+        // Credenciais Reais da Luana
+        const MP_PUBLIC_KEY = 'APP_USR-3953bd72-6930-4809-9d2d-380c8a738541';
+        const mp = new MercadoPago(MP_PUBLIC_KEY);
+
+        function atualizarProgresso() {
+            const campos = ['aluno', 'serie', 'diagnostico', 'habilidades', 'objetivos'];
+            let preenchidos = 0;
+            campos.forEach(c => { if(document.getElementById(c).value.length > 2) preenchidos++; });
+            
+            const pct = (preenchidos / campos.length) * 100;
+            document.getElementById('barra-progresso').style.width = pct + '%';
+            document.getElementById('progresso-txt').innerText = Math.round(pct) + '%';
+        }
+
+        document.getElementById('btn-gerar').addEventListener('click', () => {
+            const form = document.getElementById('form-pei');
+            if(!form.checkValidity()) {
+                alert("Por favor, preencha todos os campos para garantir a validade técnica do PEI.");
+                return;
+            }
+            document.getElementById('form-pei').classList.add('opacity-30', 'pointer-events-none');
+            document.getElementById('checkout-area').classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        });
+
+        function finalizarProcesso() {
+            document.getElementById('checkout-area').classList.add('hidden');
+            document.getElementById('tela-loading').classList.remove('hidden');
+
+            setTimeout(() => {
+                gerarPDFTecnico();
+                document.getElementById('tela-loading').classList.add('hidden');
+                alert("Pagamento processado com sucesso! Verifique seu download.");
+                location.reload();
+            }, 3000);
+        }
+
+        function gerarPDFTecnico() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const dados = {
+                aluno: document.getElementById('aluno').value,
+                serie: document.getElementById('serie').value,
+                diagnostico: document.getElementById('diagnostico').value,
+                habilidades: document.getElementById('habilidades').value,
+                objetivos: document.getElementById('objetivos').value
+            };
+
+            // Estilização do PDF - Cabeçalho
+            doc.setFillColor(30, 58, 138); // Azul Marinho
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.text("EDUCA HORTUS", 105, 20, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text("Plano de Ensino Individualizado (PEI)", 105, 30, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "italic");
+            doc.text("Documento elaborado via Inclusiva Tech", 105, 38, { align: 'center' });
+
+            // Corpo do Documento
+            doc.setTextColor(40, 40, 40);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text("1. IDENTIFICAÇÃO DO ALUNO", 20, 60);
+            doc.line(20, 62, 190, 62);
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.text(`Nome: ${dados.aluno}`, 20, 72);
+            doc.text(`Série/Ano: ${dados.serie}`, 20, 80);
+            doc.text(`Diagnóstico/PAEE: ${dados.diagnostico}`, 20, 88);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("2. AVALIAÇÃO PEDAGÓGICA E HABILIDADES", 20, 105);
+            doc.line(20, 107, 190, 107);
+            doc.setFont("helvetica", "normal");
+            const habSplit = doc.splitTextToSize(dados.habilidades, 170);
+            doc.text(habSplit, 20, 115);
+
+            const nextPos = 115 + (habSplit.length * 7);
+            doc.setFont("helvetica", "bold");
+            doc.text("3. OBJETIVOS E METAS BNCC", 20, nextPos);
+            doc.line(20, nextPos + 2, 190, nextPos + 2);
+            doc.setFont("helvetica", "normal");
+            doc.text(doc.splitTextToSize(dados.objetivos, 170), 20, nextPos + 10);
+
+            // Rodapé Legal
+            doc.setFillColor(245, 245, 245);
+            doc.rect(10, 265, 190, 25, 'F');
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Este plano está em conformidade com a Lei Brasileira de Inclusão (Lei nº 13.146/2015) e as", 105, 275, { align: 'center' });
+            doc.text("Diretrizes Nacionais para a Educação Especial. Uso exclusivo pedagógico.", 105, 280, { align: 'center' });
+
+            doc.save(`PEI_EducaHortus_${dados.aluno}.pdf`);
+        }
+    </script>
+</body>
+</html>
