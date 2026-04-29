@@ -3,113 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educa Hortus - Gerador Profissional de PEI</title>
+    <title>Educa Hortus - Gerador de PEI e Plano de Aula</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        .btn-gradient { background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%); transition: all 0.4s ease; }
-        .btn-gradient:hover { transform: scale(1.02); shadow: 0 10px 20px rgba(168, 85, 247, 0.4); }
+        .btn-gradient { background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%); }
         .text-marinho { color: #1e3a8a; }
-        .sugestao-btn { background: #f3e8ff; color: #7e22ce; border-radius: 8px; padding: 4px 10px; font-size: 10px; font-weight: bold; cursor: pointer; border: 1px solid #d8b4fe; }
-        .sugestao-btn:hover { background: #d8b4fe; color: white; }
+        .sugestao-btn { background: #f3e8ff; color: #7e22ce; border-radius: 8px; padding: 4px 10px; font-size: 10px; font-weight: bold; cursor: pointer; border: 1px solid #d8b4fe; margin-bottom: 4px; display: inline-block; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-slate-50 font-sans text-slate-900">
 
-    <header class="bg-white border-b-8 border-purple-200 py-10 px-6 text-center">
-        <h1 class="text-4xl font-black text-marinho uppercase tracking-tighter">Educa <span class="text-pink-500">Hortus</span></h1>
-        <p class="text-slate-500 italic text-sm">"Tecnologia e Ciência Pedagógica pela Inclusão Real."</p>
+    <header class="bg-white border-b-4 border-purple-200 py-8 px-6 text-center">
+        <h1 class="text-3xl font-black text-marinho uppercase tracking-tight">Educa <span class="text-pink-500">Hortus</span></h1>
+        <p class="text-slate-500 italic text-xs mt-1">Gerador de PEI Técnico e Plano de Aula Adaptado</p>
     </header>
 
-    <main class="max-w-3xl mx-auto my-8 px-4 pb-20">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-10 border border-purple-50">
+    <main class="max-w-3xl mx-auto my-6 px-4 pb-20">
+        <div id="container-principal" class="bg-white rounded-[2rem] shadow-2xl p-6 md:p-10 border border-purple-50">
             
             <form id="form-pei" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-marinho font-bold mb-1 text-sm">Nome do Aluno</label>
-                        <input type="text" id="aluno" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300" placeholder="Ex: João Silva" required>
+                    <input type="text" id="aluno" class="w-full p-4 bg-slate-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-300" placeholder="Nome Completo do Aluno" required>
+                    <input type="text" id="serie" class="w-full p-4 bg-slate-50 rounded-xl outline-none focus:ring-2 focus:ring-purple-300" placeholder="Série/Ano Escolar" required>
+                </div>
+
+                <select id="diagnostico" class="w-full p-4 bg-slate-50 rounded-xl outline-none" required>
+                    <option value="">Diagnóstico Principal...</option>
+                    <option value="Autismo (TEA)">Autismo (TEA)</option>
+                    <option value="Altas Habilidades / Superdotação">Altas Habilidades / Superdotação</option>
+                    <option value="Deficiência Intelectual">Deficiência Intelectual</option>
+                    <option value="TDAH / Transtornos">TDAH / Transtornos de Aprendizagem</option>
+                </select>
+
+                <div>
+                    <label class="block text-marinho font-bold mb-1 text-sm">Habilidades Atuais</label>
+                    <div class="mb-2">
+                        <span class="sugestao-btn" onclick="inserir('habilidades', 'Apresenta engajamento em atividades lúdicas e memória visual preservada.')">+ Potencial Visual</span>
+                        <span class="sugestao-btn" onclick="inserir('habilidades', 'Demonstra curiosidade investigativa e vocabulário acima da média.')">+ Vocabulário (AH)</span>
                     </div>
-                    <div>
-                        <label class="block text-marinho font-bold mb-1 text-sm">Série/Ano</label>
-                        <input type="text" id="serie" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300" placeholder="Ex: 2º Ano A" required>
-                    </div>
+                    <textarea id="habilidades" rows="3" class="w-full p-4 bg-slate-50 rounded-xl outline-none text-sm" placeholder="O que o aluno já realiza com autonomia?" required></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-marinho font-bold mb-1 text-sm">Público-Alvo (Diagnóstico)</label>
-                    <select id="diagnostico" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300" required>
-                        <option value="">Selecione...</option>
-                        <option value="TEA">Autismo (TEA)</option>
-                        <option value="Altas Habilidades">Altas Habilidades / Superdotação</option>
-                        <option value="DI">Deficiência Intelectual (DI)</option>
-                        <option value="TDAH">TDAH / Transtornos</option>
-                    </select>
+                    <label class="block text-marinho font-bold mb-1 text-sm">Objetivos BNCC e Metas</label>
+                    <div class="mb-2">
+                        <span class="sugestao-btn" onclick="inserir('objetivos', '(EI03ET07) Relacionar números às suas respectivas quantidades.')">+ BNCC Matemática</span>
+                        <span class="sugestao-btn" onclick="inserir('objetivos', 'Promover o enriquecimento curricular mediante projetos de interesse do aluno.')">+ Enriquecimento</span>
+                    </div>
+                    <textarea id="objetivos" rows="3" class="w-full p-4 bg-slate-50 rounded-xl outline-none text-sm" placeholder="Quais as metas pedagógicas?" required></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-marinho font-bold mb-3 text-xs uppercase tracking-widest">Barreiras de Aprendizagem</label>
-                    <div class="grid grid-cols-2 gap-2 bg-purple-50 p-4 rounded-2xl">
-                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Nenhuma"> Sem barreiras</label>
-                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Pedagógica"> Pedagógica</label>
-                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Atitudinal"> Atitudinal</label>
-                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Comunicação"> Comunicação</label>
-                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Tecnológica"> Tecnológica</label>
-                        <label class="flex items-center text-xs"><input type="checkbox" class="barreira mr-2" value="Social"> Social/Familiar</label>
-                    </div>
+                    <label class="block text-marinho font-bold mb-1 text-sm">Estratégias e Plano de Aula</label>
+                    <textarea id="metodologia" rows="3" class="w-full p-4 bg-slate-50 rounded-xl outline-none text-sm" placeholder="Como serão as aulas e adaptações?" required></textarea>
                 </div>
 
-                <div>
-                    <label class="block text-marinho font-bold mb-1 text-sm italic">Habilidades e Potencialidades</label>
-                    <div class="flex flex-wrap gap-2 mb-2">
-                        <span class="sugestao-btn" onclick="inserir('habilidades', 'Demonstra excelente memória visual e foco em temas de interesse.')">+ Foco/Memória</span>
-                        <span class="sugestao-btn" onclick="inserir('habilidades', 'Possui vocabulário avançado e curiosidade investigativa superior.')">+ Vocabulário</span>
-                    </div>
-                    <textarea id="habilidades" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="O que o aluno já consegue fazer?" required></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-marinho font-bold mb-1 text-sm italic">Objetivos (BNCC)</label>
-                    <div class="flex flex-wrap gap-2 mb-2">
-                        <span class="sugestao-btn" onclick="inserir('objetivos', '(EI03ET07) Relacionar números às suas respectivas quantidades.')">+ BNCC Números</span>
-                        <span class="sugestao-btn" onclick="inserir('objetivos', 'Promover o enriquecimento curricular através de projetos de pesquisa.')">+ Enriquecimento</span>
-                    </div>
-                    <textarea id="objetivos" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="Quais as metas para o semestre?" required></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-marinho font-bold mb-1 text-sm italic">Estratégias Pedagógicas</label>
-                    <div class="flex flex-wrap gap-2 mb-2">
-                        <span class="sugestao-btn" onclick="inserir('metodologia', 'Uso de suportes visuais, rotina estruturada e reforço positivo.')">+ Suporte Visual</span>
-                        <span class="sugestao-btn" onclick="inserir('metodologia', 'Flexibilização de tempo e fracionamento de atividades complexas.')">+ Flexibilização</span>
-                    </div>
-                    <textarea id="metodologia" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="Como você vai ensinar?" required></textarea>
-                </div>
-
-                <button type="button" id="btn-gerar" class="w-full py-5 rounded-2xl text-white font-black text-xl btn-gradient shadow-xl uppercase mt-4">
-                    Gerar PDF Profissional (R$ 47)
+                <button type="button" id="btn-gerar" class="w-full py-5 rounded-2xl text-white font-black text-xl btn-gradient shadow-xl uppercase">
+                    Gerar Documento Completo (R$ 47)
                 </button>
             </form>
 
-            <div id="checkout-area" class="hidden mt-10 text-center animate-bounce">
-                <div class="p-8 border-4 border-dashed border-purple-200 rounded-[2.5rem]">
-                    <h2 class="text-2xl font-black text-marinho mb-4">Pagamento PIX</h2>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EducaHortus47" class="mx-auto mb-6 shadow-lg rounded-xl">
-                    <button onclick="finalizar()" class="bg-green-500 text-white px-10 py-4 rounded-full font-bold hover:bg-green-600 transition shadow-lg">Já paguei! Baixar PDF</button>
+            <div id="checkout-area" class="hidden mt-10 p-8 border-4 border-purple-100 rounded-[2rem] bg-slate-50 text-center">
+                <h2 class="text-2xl font-black text-marinho mb-2">Checkout Seguro</h2>
+                <p class="text-xs text-slate-500 mb-6 font-bold uppercase tracking-widest">Confirmação de Pagamento via PIX</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EducaHortus47" class="mx-auto mb-6 bg-white p-2 shadow-sm rounded-lg">
+                <div class="space-y-4">
+                    <p class="text-[10px] text-slate-400">Após o pagamento, o sistema processará o documento técnico e o plano de aula automaticamente.</p>
+                    <button onclick="finalizar()" class="w-full bg-green-500 text-white py-4 rounded-full font-bold shadow-md hover:bg-green-600 transition">Confirmar Pagamento</button>
                 </div>
             </div>
 
-            <div id="loading" class="hidden mt-10 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-pink-500 border-solid mx-auto"></div>
-                <p class="mt-4 text-marinho font-bold">Processando seu PEI Técnico...</p>
+            <div id="loading" class="hidden mt-10 text-center py-10">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-pink-500 mx-auto mb-4"></div>
+                <p class="text-marinho font-black uppercase text-xs tracking-widest">Estruturando Plano de Aula Inclusivo...</p>
             </div>
         </div>
     </main>
-
-    <footer class="text-center py-10 text-slate-400 text-[10px]">
-        <p>© 2026 Educa Hortus & Inclusiva Tech | Penha - SC</p>
-    </footer>
 
     <script>
         function inserir(campoId, texto) {
@@ -119,15 +89,15 @@
 
         document.getElementById('btn-gerar').addEventListener('click', () => {
             const f = document.getElementById('form-pei');
-            if(!f.checkValidity()) { alert("Por favor, preencha todos os campos."); return; }
-            document.getElementById('form-pei').style.display = 'none';
+            if(!f.checkValidity()) { alert("Por favor, preencha as informações para o documento."); return; }
+            document.getElementById('form-pei').classList.add('hidden');
             document.getElementById('checkout-area').classList.remove('hidden');
         });
 
         function finalizar() {
             document.getElementById('checkout-area').classList.add('hidden');
             document.getElementById('loading').classList.remove('hidden');
-            setTimeout(() => { geraPDF(); location.reload(); }, 3000);
+            setTimeout(() => { geraPDF(); location.reload(); }, 4000);
         }
 
         function geraPDF() {
@@ -135,34 +105,52 @@
             const doc = new jsPDF();
             const a = document.getElementById('aluno').value;
 
-            // Cabeçalho PDF
+            // PÁGINA 1: PEI TÉCNICO
             doc.setFillColor(30, 58, 138); doc.rect(0, 0, 210, 45, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("EDUCA HORTUS", 105, 20, {align:'center'});
-            doc.setFontSize(10); doc.text("PLANO DE ENSINO INDIVIDUALIZADO - PEI PROFISSIONAL", 105, 30, {align:'center'});
+            doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.text("EDUCA HORTUS", 105, 20, {align:'center'});
+            doc.setFontSize(10); doc.text("PLANO DE ENSINO INDIVIDUALIZADO (PEI) - VERSÃO PROFISSIONAL", 105, 30, {align:'center'});
 
-            // Conteúdo
-            doc.setTextColor(40, 40, 40); doc.setFontSize(12); doc.setFont("helvetica", "bold");
-            doc.text(`ALUNO(A): ${a}`, 20, 60);
-            doc.text(`SÉRIE: ${document.getElementById('serie').value}`, 20, 68);
-            doc.text(`DIAGNÓSTICO: ${document.getElementById('diagnostico').value}`, 20, 76);
+            doc.setTextColor(40, 40, 40); doc.setFont("helvetica", "bold"); doc.setFontSize(14);
+            doc.text("1. IDENTIFICAÇÃO DO ESTUDANTE", 20, 60);
+            doc.setFont("helvetica", "normal"); doc.setFontSize(11);
+            doc.text(`Nome: ${a}`, 20, 70);
+            doc.text(`Série: ${document.getElementById('serie').value}`, 20, 77);
+            doc.text(`Diagnóstico: ${document.getElementById('diagnostico').value}`, 20, 84);
 
-            doc.text("HABILIDADES E POTENCIALIDADES:", 20, 95);
+            doc.setFont("helvetica", "bold"); doc.text("2. FUNDAMENTAÇÃO E PARECER TÉCNICO", 20, 100);
             doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-            doc.text(doc.splitTextToSize(document.getElementById('habilidades').value, 170), 20, 102);
+            const parecerLegal = "Em conformidade com a Lei Brasileira de Inclusão (13.146/15), este documento estabelece as adaptações necessárias para garantir o acesso ao currículo. O aluno apresenta as seguintes competências:";
+            doc.text(doc.splitTextToSize(parecerLegal, 170), 20, 108);
+            doc.text(doc.splitTextToSize(document.getElementById('habilidades').value, 170), 20, 120);
 
-            doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text("METAS E OBJETIVOS BNCC:", 20, 140);
+            doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text("3. OBJETIVOS DE APRENDIZAGEM (BNCC)", 20, 150);
+            doc.setFont("helvetica", "normal"); doc.text(doc.splitTextToSize(document.getElementById('objetivos').value, 170), 20, 157);
+
+            // PÁGINA 2: PLANO DE AULA
+            doc.addPage();
+            doc.setFillColor(236, 72, 153); doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(18); doc.text("PLANO DE AULA ADAPTADO", 105, 18, {align:'center'});
+
+            doc.setTextColor(40, 40, 40); doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+            doc.text("ESTRUTURA DE INTERVENÇÃO PEDAGÓGICA", 20, 50);
             doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-            doc.text(doc.splitTextToSize(document.getElementById('objetivos').value, 170), 20, 147);
+            
+            const roteiro = [
+                "• Acolhida e Organização: Antecipação visual da rotina do dia.",
+                "• Desenvolvimento: Atividades fracionadas com mediação constante.",
+                "• Recursos: Materiais concretos e suportes de alta/baixa tecnologia.",
+                "• Avaliação: Observação contínua do processo e não apenas do produto."
+            ];
+            doc.text(roteiro, 20, 60);
 
-            doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text("ESTRATÉGIAS PEDAGÓGICAS:", 20, 185);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-            doc.text(doc.splitTextToSize(document.getElementById('metodologia').value, 170), 20, 192);
+            doc.setFont("helvetica", "bold"); doc.text("ESTRATÉGIAS ESPECÍFICAS:", 20, 100);
+            doc.setFont("helvetica", "normal");
+            doc.text(doc.splitTextToSize(document.getElementById('metodologia').value, 170), 20, 107);
 
-            // Rodapé
-            doc.setFontSize(8); doc.setTextColor(150, 150, 150);
-            doc.text("Documento fundamentado na LBI (Lei 13.146/15) e BNCC. Gerado via Inclusiva Tech.", 105, 285, {align:'center'});
+            doc.setFillColor(245, 245, 245); doc.rect(10, 260, 190, 20, 'F');
+            doc.setFontSize(8); doc.text("Documento gerado por Educa Hortus - Ciência Pedagógica e Tecnologia", 105, 272, {align:'center'});
 
-            doc.save(`PEI_HORTUS_${a}.pdf`);
+            doc.save(`PEI_COMPLETO_${a}.pdf`);
         }
     </script>
 </body>
